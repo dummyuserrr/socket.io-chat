@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sample </title>
+</head>
+<body>
+	<div id="app">
+		<form @submit.prevent="send">
+			<input type="text" v-model="message">
+			<button>Send</button>
+		</form>
+
+		<ul>
+			<li v-for="msg in messages">{{ msg }}</li>
+		</ul>
+	</div>	
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
+	<script type="text/javascript">
+		var socket = io();
+
+		new Vue({
+			el: '#app',
+			data: {
+				message: '',
+				messages: [],
+			},
+			created(){
+				socket.on('chat.message', function(message){
+					this.messages.push(message);
+				}.bind(this));
+			},
+			methods: {
+				send(e){
+					socket.emit('chat.message' ,this.message);
+					this.message = '';
+				}
+			}
+		});
+	</script>
+</body>
+</html>
